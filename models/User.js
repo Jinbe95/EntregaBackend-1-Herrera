@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-
 // Definimos la estructura del usuario
 const userSchema = new Schema({
     first_name: {
@@ -15,7 +14,9 @@ const userSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     age: {
         type: Number,
@@ -25,17 +26,23 @@ const userSchema = new Schema({
         type: String,
         required: true // guardamos el hash
     },
-    cart: {
-        type: Schema.Types.ObjectId,
-        ref: 'carts', // referencia al modelo Cart
-        default: null
-    },
     role: {
         type: String,
-        default: 'user'
-    }
-}, { timestamps: true }); // timestamps correcto
+        default: 'user',
+        enum: ['user', 'admin']
+    },
 
-// Exportamos el modelo
+    // campos necesarios para recuperación de contraseña (consigna)
+    resetToken: {
+        type: String,
+        default: null
+    },
+    resetExpires: {
+        type: Date,
+        default: null
+    }
+}, { timestamps: true });
+
+//Exportamos el modelo
 const User = mongoose.model('User', userSchema);
 export default User;

@@ -32,7 +32,7 @@ const userSchema = new Schema({
         enum: ['user', 'admin']
     },
 
-    // campos necesarios para recuperación de contraseña (consigna)
+    // campos necesarios para recuperación de password
     resetToken: {
         type: String,
         default: null

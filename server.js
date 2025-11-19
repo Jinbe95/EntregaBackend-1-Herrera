@@ -1,8 +1,8 @@
 //------------------------------
 //carga las variables del .env
 //------------------------------
-
-import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import mongoose from 'mongoose';
 import helmet from 'helmet';

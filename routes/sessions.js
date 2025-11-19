@@ -1,11 +1,10 @@
 import express from 'express';
 import passport from 'passport';
 import { register, login, current } from '../controllers/session.controller.js';
-import { forgotPassword, resetPassword } from '../controllers/password.controller.js';
-import UserDTO from '../dtos/user.dto.js';
+import { forgotPassword, resetPassword } from '../controllers/session.controller.js';
+
 
 const router = express.Router();
-
 
 // ------------------------------
 // Registro y Login
@@ -13,25 +12,19 @@ const router = express.Router();
 router.post('/register', register);
 router.post('/login', login);
 
-
 // ------------------------------
-// Ruta /current con DTO
+// Ruta /current con DTO (solo autenticado)
 // ------------------------------
 router.get(
     '/current',
     passport.authenticate('jwt', { session: false }),
-    (req, res) => {
-        const dto = new UserDTO(req.user);
-        res.json(dto);
-    }
+    current
 );
 
-
 // ------------------------------
-// Recuperación de contraseña
+// Recuperación de password
 // ------------------------------
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
-
 
 export default router;

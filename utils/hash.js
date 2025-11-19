@@ -1,4 +1,3 @@
-// utils/hash.js
 import bcrypt from 'bcrypt';
 
 // Crear hash del password

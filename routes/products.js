@@ -1,14 +1,15 @@
 import express from 'express';
 import passport from 'passport';
 import { authorize } from '../middleware/auth.js';
-import Product from '../models/Product.js';
+import ProductRepository from '../repositories/product.repository.js';
 
 const router = express.Router();
+const productRepo = new ProductRepository();
 
 // Lista de todos los productos (público)
 router.get('/', async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await productRepo.getAll();
         return res.json({ status: 'success', payload: products });
     } catch (error) {
         console.error('GET /products error', error);
@@ -16,10 +17,10 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Ver producto por id (publico)
+// Ver producto por id (público)
 router.get('/:id', async (req, res) => {
     try {
-        const product = await Product.findById(req.params.id);
+        const product = await productRepo.getById(req.params.id);
         if (!product) return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
         return res.json({ status: 'success', payload: product });
     } catch (error) {
@@ -36,7 +37,7 @@ router.post(
     async (req, res) => {
         try {
             const payload = req.body;
-            const product = await Product.create(payload);
+            const product = await productRepo.create(payload);
             return res.status(201).json({ status: 'success', payload: product });
         } catch (error) {
             console.error('POST /products error', error);
@@ -52,7 +53,7 @@ router.put(
     authorize('admin'),
     async (req, res) => {
         try {
-            const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+            const updated = await productRepo.update(req.params.id, req.body);
             if (!updated) return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
             return res.json({ status: 'success', payload: updated });
         } catch (error) {
@@ -69,7 +70,7 @@ router.delete(
     authorize('admin'),
     async (req, res) => {
         try {
-            const removed = await Product.findByIdAndDelete(req.params.id);
+            const removed = await productRepo.delete(req.params.id);
             if (!removed) return res.status(404).json({ status: 'error', message: 'Producto no encontrado' });
             return res.json({ status: 'success', message: 'Producto eliminado' });
         } catch (error) {
